@@ -1,0 +1,16 @@
+[build]
+  node_bundler = "esbuild"
+  functions = "backend"
+  publish = "frontend/build"
+  command = "npm install && npm run build"
+
+[dev]
+  functions = "backend"
+  publish = "frontend/build"
+  node_bundler = "esbuild"
+
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
