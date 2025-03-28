@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Input } from "~/components/ui/input";
 import { useAuth } from "~/context/auth";
+import RequestHandler from "~/lib/utilities/RequestHandler";
 
 export default function LoginPage() {
 	const { isAuthenticated, login } = useAuth();
@@ -33,6 +34,15 @@ export default function LoginPage() {
 			setError("Invalid email or password.");
 		}
 	};
+
+	const test = async () => {
+		const request = await RequestHandler.fetchData("get", "test");
+		alert(JSON.stringify(request));
+	};
+
+	useEffect(() => {
+		test();
+	}, []);
 
 	return (
 		<>

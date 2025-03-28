@@ -1,5 +1,8 @@
 # Local Netlify folder
+backend
+
 .netlify
 .env
 run.bat
 build.bat
+node_modules

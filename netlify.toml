@@ -6,7 +6,7 @@
 
 [dev]
   functions = "backend"
-  publish = "frontend/build"
+  publish = "dist"
   node_bundler = "esbuild"
 
 
