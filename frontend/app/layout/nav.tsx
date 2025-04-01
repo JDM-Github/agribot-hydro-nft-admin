@@ -1,14 +1,24 @@
-import { Home, Box, Users, Settings, Menu } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import {
+	Menu,
+	Home,
+	Package,
+	Leaf,
+	AlertTriangle,
+	Users,
+	Settings,
+} from "lucide-react";
 
 const navItems = [
 	{ name: "Dashboard", icon: <Home size={20} />, path: "/" },
-	{ name: "Model", icon: <Box size={20} />, path: "/model" },
-	{ name: "Plants", icon: <Box size={20} />, path: "/plants" },
+	{ name: "Model", icon: <Package size={20} />, path: "/model" },
+	{ name: "Plants", icon: <Leaf size={20} />, path: "/plants" }, 
+	{ name: "Diseases", icon: <AlertTriangle size={20} />, path: "/diseases" },
 	{ name: "Accounts", icon: <Users size={20} />, path: "/accounts" },
 	{ name: "Settings", icon: <Settings size={20} />, path: "/settings" },
 ];
+
 
 export default function Navbar() {
 	const [active, setActive] = useState("Dashboard");

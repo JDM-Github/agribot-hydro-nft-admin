@@ -1,20 +1,21 @@
 import { Card, CardContent } from "~/components/ui/card";
-import { Home, Users, Cpu } from "lucide-react";
+import { Leaf, AlertTriangle, Cpu } from "lucide-react";
 
-export default function CardSection() {
+export default function CardSection({ plantCount }: { plantCount: number }) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3 flex-1">
+			{/* Detectable Plants */}
 			<Card className="bg-gray-900 shadow-lg border-0 py-2 px-2 relative overflow-hidden">
 				<CardContent className="py-1 px-3">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-2">
-							<Home size={32} className="text-green-500" />
+							<Leaf size={32} className="text-green-500" />
 							<div>
 								<p className="text-gray-400 text-xs md:text-sm">
-									Registered Robots
+									Detectable Plants
 								</p>
 								<p className="text-xl md:text-2xl font-bold text-white">
-									50
+									{plantCount}
 								</p>
 							</div>
 						</div>
@@ -23,25 +24,27 @@ export default function CardSection() {
 				<div className="absolute top-0 rounded-2xl right-0 h-full w-1/4 bg-gradient-to-b from-green-500/30 to-transparent"></div>
 			</Card>
 
+			{/* Detectable Diseases */}
 			<Card className="bg-gray-900 shadow-lg border-0 py-2 px-2 relative overflow-hidden">
 				<CardContent className="py-1 px-3">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-2">
-							<Users size={32} className="text-blue-500" />
+							<AlertTriangle size={32} className="text-red-500" />
 							<div>
 								<p className="text-gray-400 text-xs md:text-sm">
-									Total Accounts
+									Detectable Diseases
 								</p>
 								<p className="text-xl md:text-2xl font-bold text-white">
-									50
+									75
 								</p>
 							</div>
 						</div>
 					</div>
 				</CardContent>
-				<div className="absolute top-0 rounded-2xl right-0 h-full w-1/4 bg-gradient-to-b from-blue-500/30 to-transparent"></div>
+				<div className="absolute top-0 rounded-2xl right-0 h-full w-1/4 bg-gradient-to-b from-red-500/30 to-transparent"></div>
 			</Card>
 
+			{/* Current Model */}
 			<Card className="bg-gray-900 shadow-lg border-0 py-2 px-2 relative overflow-hidden">
 				<CardContent className="py-1 px-3">
 					<div className="flex items-center justify-between">
@@ -55,7 +58,7 @@ export default function CardSection() {
 									ModelV1.0.0
 								</p>
 								<p className="text-[10px] md:text-xs text-gray-300">
-									AI for plant detection
+									AI for plant disease detection
 								</p>
 							</div>
 						</div>

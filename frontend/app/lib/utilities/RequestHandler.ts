@@ -23,11 +23,13 @@ export default class RequestHandler {
 			...headers,
 		};
 
-		const authToken = localStorage.getItem("token");
-		if (authToken) {
-			options.headers["Authorization"] = `Bearer ${authToken}`;
-		}
+		const isClient = typeof window !== "undefined";
+		const token = isClient ? localStorage.getItem("authToken") : null;
 
+		if (token) {
+			options.headers["Authorization"] = `Bearer ${token}`;
+		}
+		
 		if (
 			method.toLowerCase() === "get" &&
 			Object.keys(requestData).length > 0
@@ -42,6 +44,9 @@ export default class RequestHandler {
 		) {
 			options.body = JSON.stringify(requestData);
 		}
+		
+		console.log(url);
+		console.log(options);
 
 		try {
 			const response = await fetch(url, options);

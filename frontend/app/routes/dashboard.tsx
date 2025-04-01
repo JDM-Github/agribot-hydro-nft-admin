@@ -1,12 +1,11 @@
 import { motion } from "framer-motion";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import type { Route as Rt } from "./+types/dashboard";
 import RobotComparisonCard from "~/components/dashboard/robotcomparison";
 import CardSection from "~/components/dashboard/cardsection";
 import RobotSpecification from "~/components/dashboard/robotspecification";
 import UpdateActivityCard from "~/components/dashboard/updateactivity";
 import MilestoneHeatmap from "~/components/dashboard/milestone";
+import RequestHandler from "~/lib/utilities/RequestHandler";
 
 export function meta({}: Rt.MetaArgs) {
 	return [
@@ -15,38 +14,53 @@ export function meta({}: Rt.MetaArgs) {
 	];
 }
 
+export async function loader() {
+	try {
+		const response = await RequestHandler.fetchData("get", "plant/count");
+		if (!response.success) {
+			throw new Error(response.message || "Failed to fetch users");
+		}
+		return { plantCount: response.count };
+	} catch (error: any) {
+		console.error("Fetch error:", error);
+		return { plants: [] };
+	}
+}
+
 const robotModels = [
 	{
 		name: "ModelV1.0.0",
 		specs: [
-			{ spec: "Speed", value: 100 },
-			{ spec: "Battery Life", value: 60 },
-			{ spec: "Processing Power", value: 70 },
+			{ spec: "Accuracy", value: 100 },
+			{ spec: "Precision", value: 100 },
+			{ spec: "Recall", value: 60 },
+			{ spec: "F1-Score", value: 70 },
 		],
 	},
 	{
 		name: "ModelV1.0.1",
 		specs: [
-			{ spec: "Speed", value: 85 },
-			{ spec: "Battery Life", value: 65 },
-			{ spec: "Processing Power", value: 75 },
+			{ spec: "Accuracy", value: 85 },
+			{ spec: "Precision", value: 100 },
+			{ spec: "Recall", value: 65 },
+			{ spec: "F1-Score", value: 75 },
 		],
 	},
 	{
 		name: "ModelV1.0.2",
 		specs: [
-			{ spec: "Speed", value: 90 },
-			{ spec: "Battery Life", value: 70 },
-			{ spec: "Processing Power", value: 78 },
+			{ spec: "Accuracy", value: 90 },
+			{ spec: "Precision", value: 100 },
+			{ spec: "Recall", value: 70 },
+			{ spec: "F1-Score", value: 78 },
 		],
 	},
 ];
 
 const specs = { Battery: "8 hours", Capacity: "20L", Speed: "5 km/h" };
 
-export default function AgriBotDashboard() {
-
-
+export default function AgriBotDashboard({ loaderData }: Rt.ComponentProps) {
+	const plantCount = loaderData.plantCount;
 	return (
 		<motion.div
 			className="p-6"
@@ -71,7 +85,7 @@ export default function AgriBotDashboard() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
 				>
-					<CardSection />
+					<CardSection plantCount={plantCount} />
 					<RobotSpecification specs={specs} />
 					<UpdateActivityCard />
 				</motion.div>

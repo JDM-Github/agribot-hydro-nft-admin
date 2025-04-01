@@ -7,88 +7,49 @@ export function meta({}: Rt.MetaArgs) {
 }
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import AccountHeader from "~/components/accounts/accountsheader";
 import AccountsTable from "~/components/accounts/accountstable";
 import AccountsPaginator from "~/components/accounts/accountspaginator";
+import RequestHandler from "~/lib/utilities/RequestHandler";
+import type { User } from "~/helpers/types";
 
-interface User {
-	id: number;
-	name: string;
-	role: string;
-	model: string;
-	config: string;
+export async function loader() {
+	try {
+		const response = await RequestHandler.fetchData("get", "get-all-users");
+
+		if (!response.success) {
+			throw new Error(response.message || "Failed to fetch users");
+		}
+
+		return { users: response.users };
+	} catch (error: any) {
+		console.error("Fetch error:", error);
+		return { users: [] };
+	}
 }
 
-export default function AccountsPage() {
+export default function AccountsPage({ loaderData }: Rt.ComponentProps) {
 	const [showAdmins, setShowAdmins] = useState(false);
-	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
 
 	const [searchTerm, setSearchTerm] = useState("");
-
-	const users: User[] = [
-		{
-			id: 1,
-			name: "John Doe",
-			role: "Admin",
-			model: "-----",
-			config: "Custom",
-		},
-		{
-			id: 2,
-			name: "Jane Smith",
-			role: "User",
-			model: "ModelV1.0.1",
-			config: "Standard",
-		},
-		{
-			id: 3,
-			name: "Alice Johnson",
-			role: "Admin",
-			model: "-----",
-			config: "Advanced",
-		},
-		{
-			id: 4,
-			name: "Bob Brown",
-			role: "User",
-			model: "ModelV1.0.1",
-			config: "Basic",
-		},
-		{
-			id: 5,
-			name: "Charlie White",
-			role: "Admin",
-			model: "-----",
-			config: "Premium",
-		},
-		{
-			id: 6,
-			name: "Dave Green",
-			role: "User",
-			model: "ModelV1.0.1",
-			config: "Standard",
-		},
-	];
+	const users = loaderData.users;
 
 	const filteredUsers = showAdmins
-		? users.filter((u) => u.role === "Admin")
-		: users;
+		? users.filter((u: User) => u.role === "Admin")
+		: users.filter((u: User) => u.role !== "Admin");
 	const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 	const paginatedUsers = filteredUsers.slice(
 		(currentPage - 1) * itemsPerPage,
 		currentPage * itemsPerPage
 	);
-
-	const handleFilterChange = () => {
-	};
+	const handleFilterChange = () => {};
 
 	return (
-		<div className="bg-gray-950 text-white rounded-b-3xl">
-			<div className="p-6 space-y-3">
+		<div className="bg-gray-950 text-white rounded-b-3xl min-h-screen flex flex-col items-center">
+			<div className="p-6 space-y-3 w-full">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -96,21 +57,23 @@ export default function AccountsPage() {
 				>
 					<AccountHeader
 						showAdmins={showAdmins}
-						searchTerm={""}
+						searchTerm={searchTerm}
 						setSearchTerm={setSearchTerm}
 						handleFilterChange={handleFilterChange}
 						setShowAdmins={setShowAdmins}
 					/>
 				</motion.div>
+
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+					transition={{
+						duration: 0.5,
+						delay: 0.5,
+						ease: "easeOut",
+					}}
 				>
-					<AccountsTable
-						paginatedUsers={paginatedUsers}
-						setSelectedUser={setSelectedUser}
-					/>
+					<AccountsTable paginatedUsers={paginatedUsers} />
 					<AccountsPaginator
 						currentPage={currentPage}
 						setCurrentPage={setCurrentPage}

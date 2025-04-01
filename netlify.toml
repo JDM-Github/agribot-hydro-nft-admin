@@ -1,15 +1,16 @@
 [build]
   node_bundler = "esbuild"
-  functions = "backend"
+  functions = "backend/functions"
   publish = "frontend/build"
+  included_files = ["backend/models/**"]
   command = "npm install && npm run build"
 
 [dev]
-  functions = "backend"
-  publish = "dist"
   node_bundler = "esbuild"
-
-
+  functions = "backend/functions"
+  publish = "dist"
+  included_files = ["backend/models/**"]
+  
 [[redirects]]
   from = "/*"
   to = "/index.html"

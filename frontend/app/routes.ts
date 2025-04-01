@@ -1,10 +1,21 @@
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import {
+	type RouteConfig,
+	index,
+	route,
+	layout,
+} from "@react-router/dev/routes";
 
 export default [
-	index("routes/dashboard.tsx"),
-	route("model", "routes/model.tsx"),
-	route("login", "routes/login.tsx"),
-	route("plants", "routes/plants.tsx"),
-	route("settings", "routes/settings.tsx"),
-	route("accounts", "routes/accounts.tsx"),
+	route("login", "./routes/login.tsx"),
+	route("*?", "./routes/not-found.tsx"),
+
+	layout("./routes/protected-routes.tsx", [
+		index("./routes/dashboard.tsx"),
+		route("model", "./routes/model.tsx"),
+		route("plants", "./routes/plants.tsx"),
+		route("diseases", "./routes/plants.tsx"),
+		route("settings", "./routes/settings.tsx"),
+		route("accounts", "./routes/accounts.tsx"),
+	]),
 ] satisfies RouteConfig;
+56

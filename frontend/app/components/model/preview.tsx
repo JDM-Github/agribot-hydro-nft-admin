@@ -1,16 +1,16 @@
-import {
-    Package,
-    Image,
-} from "lucide-react";
+import { Package, Image } from "lucide-react";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import ModelViewer from "~/components/modelviewer";
 
-export default function Preview({ setShowMaterials }: {setShowMaterials: Function}) {
-
+export default function Preview({
+	setShowMaterials,
+}: {
+	setShowMaterials: Function;
+}) {
 	return (
 		<>
-			<Card className="relative bg-gradient-to-b from-gray-950 to-green-950/50 border-0 h-[300px] lg:h-[400px]">
+			<Card className="relative bg-gradient-to-b from-gray-950 to-green-950/50 border-0 h-[300px] lg:h-[400px] mb-3">
 				<div className="absolute right-4 flex space-x-2">
 					<Button
 						variant="outline"
@@ -31,7 +31,8 @@ export default function Preview({ setShowMaterials }: {setShowMaterials: Functio
 						View PNG
 					</Button>
 				</div>
-				<ModelViewer modelPath={"/rose.glb"}	/>		</Card>
+				<ModelViewer modelPath={"/AGRIBOT.glb"} />
+			</Card>
 		</>
 	);
 }

@@ -1,5 +1,5 @@
 # Local Netlify folder
-backend
+backend/**
 
 .netlify
 .env

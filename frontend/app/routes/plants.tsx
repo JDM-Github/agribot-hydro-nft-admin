@@ -6,121 +6,34 @@ export function meta({}: Rt.MetaArgs) {
 	];
 }
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import PlantsTable from "~/components/plants/plantstable";
 import PlantsPaginator from "~/components/plants/plantspaginator";
 import PlantHeader from "~/components/plants/plantheader";
+import RequestHandler from "~/lib/utilities/RequestHandler";
 
-interface Plant {
-	id: number;
-	image: string;
-	name: string;
-	description: string;
-	confidence: number;
-	createdAt: string;
-	updatedAt: string;
-	modelVersion: string;
-	diseases: string[];
-	recommendedSpray: string[];
-	datasetLink: string;
+export async function loader() {
+	try {
+		const response = await RequestHandler.fetchData("get", "plant/get-all");
+		if (!response.success) {
+			throw new Error(response.message || "Failed to fetch users");
+		}
+		return { plants: response.plants };
+	} catch (error: any) {
+		console.error("Fetch error:", error);
+		return { plants: [] };
+	}
 }
 
-export default function PlantsPage() {
-
+export default function PlantsPage({ loaderData }: Rt.ComponentProps) {
+	const plants = loaderData.plants || [];
 	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [expandedPlant, setExpandedPlant] = useState<number | null>(null);
 	const itemsPerPage = 10;
 
-	const plants: Plant[] = [
-		{
-			id: 1,
-			image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?cs=srgb&dl=pexels-julia-nagy-568948-1327838.jpg&fm=jpg",
-			name: "Tomato",
-			description:
-				"A red, juicy fruit commonly mistaken for a vegetable.",
-			confidence: 98.5,
-			createdAt: "2025-03-01",
-			updatedAt: "2025-03-05",
-			modelVersion: "v1.2.0",
-			diseases: ["Late Blight", "Early Blight"],
-			recommendedSpray: ["Copper Fungicide", "Neem Oil"],
-			datasetLink:
-				"https://www.kaggle.com/datasets/alexattia/plant-village",
-		},
-		{
-			id: 2,
-			image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?cs=srgb&dl=pexels-julia-nagy-568948-1327838.jpg&fm=jpg",
-			name: "Lettuce",
-			description:
-				"A leafy green vegetable used in salads and sandwiches.",
-			confidence: 97.8,
-			createdAt: "2025-02-20",
-			updatedAt: "2025-03-03",
-			modelVersion: "v1.1.8",
-			diseases: ["Downy Mildew", "Lettuce Mosaic Virus"],
-			recommendedSpray: ["Bordeaux Mixture", "Insecticidal Soap"],
-			datasetLink: "https://data.mendeley.com/datasets/9wvz4bkp4n/2",
-		},
-		{
-			id: 3,
-			image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?cs=srgb&dl=pexels-julia-nagy-568948-1327838.jpg&fm=jpg",
-			name: "Kale",
-			description: "A nutrient-rich leafy green vegetable.",
-			confidence: 96.2,
-			createdAt: "2025-02-15",
-			updatedAt: "2025-03-01",
-			modelVersion: "v1.1.5",
-			diseases: ["Black Rot", "Powdery Mildew"],
-			recommendedSpray: ["Sulfur Spray", "Copper Hydroxide"],
-			datasetLink:
-				"https://www.kaggle.com/datasets/vipoooool/new-plant-diseases-dataset",
-		},
-		{
-			id: 4,
-			image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?cs=srgb&dl=pexels-julia-nagy-568948-1327838.jpg&fm=jpg",
-			name: "Spinach",
-			description: "A dark green leafy vegetable rich in iron.",
-			confidence: 95.5,
-			createdAt: "2025-01-28",
-			updatedAt: "2025-02-25",
-			modelVersion: "v1.0.9",
-			diseases: ["Cladosporium Leaf Spot", "Downy Mildew"],
-			recommendedSpray: ["Chlorothalonil", "Copper Fungicide"],
-			datasetLink: "https://github.com/spMohanty/PlantVillage-Dataset",
-		},
-		{
-			id: 5,
-			image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?cs=srgb&dl=pexels-julia-nagy-568948-1327838.jpg&fm=jpg",
-			name: "Basil",
-			description: "A fragrant herb commonly used in cooking.",
-			confidence: 94.7,
-			createdAt: "2025-01-12",
-			updatedAt: "2025-02-10",
-			modelVersion: "v1.0.7",
-			diseases: ["Basil Downy Mildew", "Fusarium Wilt"],
-			recommendedSpray: ["Phosphorous Acid", "Bacillus Subtilis"],
-			datasetLink:
-				"https://www.kaggle.com/datasets/abdallahalidev/plant-disease-detection",
-		},
-		{
-			id: 6,
-			image: "",
-			name: "Bok Choy",
-			description: "A type of Chinese cabbage used in Asian cuisine.",
-			confidence: 93.9,
-			createdAt: "2025-01-05",
-			updatedAt: "2025-02-02",
-			modelVersion: "v1.0.5",
-			diseases: ["Clubroot", "Alternaria Leaf Spot"],
-			recommendedSpray: ["Lime Treatment", "Mancozeb"],
-			datasetLink: "https://data.mendeley.com/datasets/tywbtsjrjv/1",
-		},
-	];
-
 	const filteredPlants = searchTerm
-		? plants.filter((p) =>
+		? plants.filter((p: any) =>
 				p.name.toLowerCase().includes(searchTerm.toLowerCase()))
 		: plants;
 

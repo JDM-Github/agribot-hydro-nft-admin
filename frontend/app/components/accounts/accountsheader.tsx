@@ -44,7 +44,7 @@ export default function AccountHeader({
 						className="cursor-pointer transition duration-100 ease-in-out bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-md flex items-center"
 					>
 						<Shield size={16} className="mr-2" />
-						{showAdmins ? "Show All Users" : "Show Admins"}
+						{showAdmins ? "Show Users" : "Show Admins"}
 					</Button>
 				</div>
 			</div>

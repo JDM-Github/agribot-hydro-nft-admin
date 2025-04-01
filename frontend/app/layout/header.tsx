@@ -7,7 +7,6 @@ export default function Header() {
 	const [showNotifications, setShowNotifications] = useState(false);
 	const notificationRef = useRef<HTMLDivElement>(null);
 
-	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (

@@ -14,6 +14,7 @@ import PlantScroll from "~/components/model/plantscroll";
 import RobotComparison from "~/components/model/robotcomparison";
 import Specifications from "~/components/model/specification";
 import MaterialDialog from "~/components/model/materialdialog";
+import RequestHandler from "~/lib/utilities/RequestHandler";
 
 const models = [
 	{ id: 1, name: "Model V1.0.0", description: "AI for plant detection" },
@@ -23,41 +24,21 @@ const models = [
 	{ id: 5, name: "Model V2.0.0", description: "Next-gen AI model" },
 ];
 
-const plants = [
-	{
-		id: 1,
-		name: "Sunflower",
-		src: "https://blog.lexmed.com/images/librariesprovider80/blog-post-featured-images/shutterstock_1896755260.jpg?sfvrsn=52546e0a_0",
-		confidence: 95,
-	},
-	{
-		id: 2,
-		name: "Rose",
-		src: "https://blog.lexmed.com/images/librariesprovider80/blog-post-featured-images/shutterstock_1896755260.jpg?sfvrsn=52546e0a_0",
-		confidence: 88,
-	},
-	{
-		id: 3,
-		name: "Tulip",
-		src: "https://blog.lexmed.com/images/librariesprovider80/blog-post-featured-images/shutterstock_1896755260.jpg?sfvrsn=52546e0a_0",
-		confidence: 92,
-	},
-	{
-		id: 4,
-		name: "Lavender",
-		src: "https://blog.lexmed.com/images/librariesprovider80/blog-post-featured-images/shutterstock_1896755260.jpg?sfvrsn=52546e0a_0",
-		confidence: 89,
-	},
-	{
-		id: 5,
-		name: "Daisy",
-		src: "https://blog.lexmed.com/images/librariesprovider80/blog-post-featured-images/shutterstock_1896755260.jpg?sfvrsn=52546e0a_0",
-		confidence: 97,
-	},
-];
+export async function loader() {
+	try {
+		const response = await RequestHandler.fetchData("get", "plant/get-all");
+		if (!response.success) {
+			throw new Error(response.message || "Failed to fetch users");
+		}
+		return { plants: response.plants };
+	} catch (error: any) {
+		console.error("Fetch error:", error);
+		return { plants: [] };
+	}
+}
 
-export default function ModelPage() {
-
+export default function ModelPage({ loaderData }: Rt.ComponentProps) {
+	const plants = loaderData.plants || [];
 	const [selectedModel, setSelectedModel] = useState(models[0]);
 	const [showMaterials, setShowMaterials] = useState(false);
 

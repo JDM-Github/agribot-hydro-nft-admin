@@ -1,6 +1,4 @@
-import {
-	Outlet,
-} from "react-router";
+import { Outlet } from "react-router";
 import "./app.css";
 
 import Layout from "./layout/layout";
@@ -11,4 +9,3 @@ export { Layout, link, ErrorBoundary };
 export default function App() {
 	return <Outlet />;
 }
-

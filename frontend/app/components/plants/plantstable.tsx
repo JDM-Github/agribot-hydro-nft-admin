@@ -1,6 +1,7 @@
 import { Table } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import PlantDetails from "./plantsui";
 
 export default function PlantsTable({
 	paginatedPlants,
@@ -16,23 +17,17 @@ export default function PlantsTable({
 			<Table className="w-full bg-gray-900 text-white rounded-lg overflow-hidden table-fixed">
 				<thead>
 					<tr className="border-b border-gray-700 text-gray-400 bg-gray-800">
-						<th className="p-3 text-left w-[15%] truncate">
-							Plant Name
-						</th>
-						<th className="p-3 text-left w-[30%] hidden lg:flex">
-							Description
-						</th>
-						<th className="p-3 text-left w-[10%] truncate">
-							Confidence
-						</th>
-						<th className="p-3 text-left w-[15%] truncate">
-							Created At
-						</th>
-						<th className="p-3 text-left w-[15%] truncate">
+						<th className="p-3 text-left truncate">Plant Name</th>
+						<th className="p-3 text-left truncate">Confidence</th>
+						{/* <th className="p-3 text-left truncate">Recall</th>
+						<th className="p-3 text-left truncate">mAP50</th>
+						<th className="p-3 text-left truncate">mAP50-95</th> */}
+						<th className="p-3 text-left truncate">Created At</th>
+						<th className="p-3 text-left w-auto truncate">
 							Updated At
 						</th>
-						<th className="p-3 text-left w-[15%] truncate">
-							Model Version
+						<th className="p-3 text-left w-auto truncate">
+							Actions
 						</th>
 					</tr>
 				</thead>
@@ -55,20 +50,30 @@ export default function PlantsTable({
 											{plant.name}
 										</span>
 									</td>
-									<td className="p-3 text-gray-300 truncate max-w-[200px] hidden lg:flex">
-										{plant.description}
-									</td>
 									<td className="p-3 text-green-400 truncate">
 										{plant.confidence}%
 									</td>
+									{/* <td className="p-3 text-green-400 truncate">
+										{plant.recall}%
+									</td>
+									<td className="p-3 text-green-400 truncate">
+										{plant.mAP50}%
+									</td>
+									<td className="p-3 text-green-400 truncate">
+										{plant.mAP50_95}%
+									</td> */}
 									<td className="p-3 text-blue-400 truncate">
-										{plant.createdAt}
+										{new Date(
+											plant.createdAt
+										).toLocaleDateString()}
 									</td>
 									<td className="p-3 text-yellow-400 truncate">
-										{plant.updatedAt}
+										{new Date(
+											plant.updatedAt
+										).toLocaleDateString()}
 									</td>
+
 									<td className="p-3 text-purple-400 flex justify-between items-center">
-										{plant.modelVersion}
 										<Button
 											variant="ghost"
 											size="sm"
@@ -82,61 +87,21 @@ export default function PlantsTable({
 											}
 										>
 											{expandedPlant === plant.id ? (
-												<ChevronUp size={16} />
+												<>
+													{"View "}
+													<ChevronUp size={16} />
+												</>
 											) : (
+												<>
+													{"View "}
 												<ChevronDown size={16} />
+												</>
 											)}
 										</Button>
 									</td>
 								</tr>
 								{expandedPlant === plant.id && (
-									<tr className="bg-gray-950 border-gray-800 border">
-										<td
-											colSpan={
-												window.innerWidth < 800 ? 5 : 6
-											}
-											className="p-3"
-										>
-											<div className="space-y-2">
-												<p className="text-gray-400">
-													<strong className="text-green-300">
-														Diseases:
-													</strong>{" "}
-													{plant.diseases.length > 0
-														? plant.diseases.join(
-																", "
-														  )
-														: "None"}
-												</p>
-												<p className="text-gray-400">
-													<strong className="text-yellow-300">
-														Recommended Spray:
-													</strong>{" "}
-													{plant.recommendedSpray
-														.length > 0
-														? plant.recommendedSpray.join(
-																", "
-														  )
-														: "None"}
-												</p>
-												<p className="text-gray-400">
-													<strong className="text-purple-300">
-														Dataset Link:
-													</strong>{" "}
-													<a
-														href={plant.datasetLink}
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-blue-400 hover:underline"
-													>
-														{plant.datasetLink
-															? "View Dataset"
-															: "No Link Available"}
-													</a>
-												</p>
-											</div>
-										</td>
-									</tr>
+									<PlantDetails plant={plant} />
 								)}
 							</>
 						))

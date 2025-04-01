@@ -5,10 +5,10 @@ const ModelViewer = ({ modelPath }: { modelPath: string }) => {
 	const { scene } = useGLTF(modelPath);
 
 	return (
-		<Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
+		<Canvas camera={{ position: [2, 1, 3], fov: 60 }}>
 			<ambientLight intensity={0.5} />
 			<directionalLight position={[2, 5, 2]} intensity={1} />
-			<primitive object={scene} scale={30} />
+			<primitive object={scene} scale={5} position={[0, -1.2, 0]} />
 			<OrbitControls />
 		</Canvas>
 	);
