@@ -6,8 +6,7 @@ export function meta({}: Rt.MetaArgs) {
 	];
 }
 
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Preview from "~/components/model/preview";
 import PlantScroll from "~/components/model/plantscroll";
@@ -16,30 +15,67 @@ import Specifications from "~/components/model/specification";
 import MaterialDialog from "~/components/model/materialdialog";
 import RequestHandler from "~/lib/utilities/RequestHandler";
 
-const models = [
-	{ id: 1, name: "Model V1.0.0", description: "AI for plant detection" },
-	{ id: 2, name: "Model V1.0.1", description: "Enhanced processing power" },
-	{ id: 3, name: "Model V1.0.2", description: "Improved moisture sensors" },
-	{ id: 4, name: "Model V1.1.0", description: "Extended battery life" },
-	{ id: 5, name: "Model V2.0.0", description: "Next-gen AI model" },
-];
 
 export async function loader() {
 	try {
-		const response = await RequestHandler.fetchData("get", "plant/get-all");
-		if (!response.success) {
-			throw new Error(response.message || "Failed to fetch users");
-		}
-		return { plants: response.plants };
+		const [
+			plants,
+			objectDetection,
+			stageclassification,
+			segmentation,
+		] = await Promise.all([
+			RequestHandler.fetchData(
+				"get",
+				"plant/get-all-only?fields=id,image,name,confidence"
+			),
+			RequestHandler.fetchData("get", "yoloobjectdetection/get-all"),
+			RequestHandler.fetchData("get", "yolostageclassification/get-all"),
+			RequestHandler.fetchData("get", "maskrcnnsegmentation/get-all"),
+		]);
+
+		if (!plants.success)
+			throw new Error(plants.message || "Failed to fetch plant count.");
+		if (!objectDetection.success)
+			throw new Error(
+				objectDetection.message ||
+					"Failed to fetch object detection models."
+			);
+		if (!stageclassification.success)
+			throw new Error(
+				stageclassification.message ||
+					"Failed to fetch stage classification models."
+			);
+		if (!segmentation.success)
+			throw new Error(
+				segmentation.message || "Failed to fetch segmentation models."
+			);
+		return {
+			plants: plants.plants || [],
+			objectDetection: objectDetection.models || [],
+			stageClassification: stageclassification.models || [],
+			segmentation: segmentation.models || [],
+		};
 	} catch (error: any) {
-		console.error("Fetch error:", error);
-		return { plants: [] };
+		console.error("Fetch error:", error.message || error);
+
+		return {
+			plants: [],
+			objectDetection: [],
+			error: error.message || "Unknown error occurred",
+			stageClassification: [],
+			segmentation: [],
+		};
 	}
 }
 
 export default function ModelPage({ loaderData }: Rt.ComponentProps) {
 	const plants = loaderData.plants || [];
-	const [selectedModel, setSelectedModel] = useState(models[0]);
+	const objectDetection = loaderData.objectDetection || [];
+	const stageclassification = loaderData.stageClassification || [];
+	const segmentation = loaderData.segmentation || [];
+	
+
+	const [selectedModel, setSelectedModel] = useState(objectDetection[0]);
 	const [showMaterials, setShowMaterials] = useState(false);
 
 	const materialLinks = {
@@ -82,7 +118,9 @@ export default function ModelPage({ loaderData }: Rt.ComponentProps) {
 					transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
 				>
 					<RobotComparison
-						models={models}
+						objectDetection={objectDetection}
+						stageclassification={stageclassification}
+						segmentation={segmentation}
 						setSelectedModel={setSelectedModel}
 					/>
 					<Specifications selectedModel={selectedModel} />

@@ -61,7 +61,7 @@ export default function LoginPage() {
 				setLoading(false);
 				return;
 			}
-
+			localStorage.setItem("user", JSON.stringify(response.user));
 			Cookies.set("token", response.token, {
 				expires: 1 / 24,
 				path: "/",

@@ -7,7 +7,14 @@ export default function Header() {
 	const [showNotifications, setShowNotifications] = useState(false);
 	const notificationRef = useRef<HTMLDivElement>(null);
 
+	const [user, setUser] = useState<any>(null);
+
 	useEffect(() => {
+		const storedUser = localStorage.getItem("user");
+		if (storedUser) {
+			setUser(JSON.parse(storedUser));
+		}
+
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				notificationRef.current &&
@@ -85,13 +92,22 @@ export default function Header() {
 						)}
 					</div>
 
-					<div className="p-2 w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full text-white font-semibold">
-						{"JohnDave"
-							.split(" ")
-							.map((n: any) => n[0])
-							.join("")
-							.toUpperCase()}
-					</div>
+					{user &&
+						(user.profileImage ? (
+							<img
+								src={user.profileImage}
+								alt="User Profile"
+								className="w-10 h-10 rounded-full object-cover border-2 border-green-300"
+							/>
+						) : (
+							<div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full text-white font-semibold">
+								{user.fullName
+									.split(" ")
+									.map((n: any) => n[0])
+									.join("")
+									.toUpperCase()}
+							</div>
+						))}
 				</div>
 			</header>
 			<div className="w-full bg-green-900/50 py-2 px-6 text-sm text-green-500/50">

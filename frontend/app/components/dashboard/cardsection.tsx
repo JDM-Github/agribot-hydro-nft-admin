@@ -1,7 +1,13 @@
 import { Card, CardContent } from "~/components/ui/card";
 import { Leaf, AlertTriangle, Cpu } from "lucide-react";
 
-export default function CardSection({ plantCount }: { plantCount: number }) {
+export default function CardSection({
+	plantCount,
+	diseaseCount,
+}: {
+	plantCount: number;
+	diseaseCount: number;
+}) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3 flex-1">
 			{/* Detectable Plants */}
@@ -35,7 +41,7 @@ export default function CardSection({ plantCount }: { plantCount: number }) {
 									Detectable Diseases
 								</p>
 								<p className="text-xl md:text-2xl font-bold text-white">
-									75
+									{diseaseCount}
 								</p>
 							</div>
 						</div>
@@ -52,10 +58,10 @@ export default function CardSection({ plantCount }: { plantCount: number }) {
 							<Cpu size={32} className="text-purple-500" />
 							<div>
 								<p className="text-gray-400 text-xs md:text-sm">
-									Current Model
+									Latest AGRIBOT Version
 								</p>
 								<p className="font-bold text-xl md:text-2xl text-white">
-									ModelV1.0.0
+									Version 1.0.0
 								</p>
 								<p className="text-[10px] md:text-xs text-gray-300">
 									AI for plant disease detection

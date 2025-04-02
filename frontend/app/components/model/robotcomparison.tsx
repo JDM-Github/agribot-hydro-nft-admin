@@ -11,49 +11,40 @@ import RobotScroll from "~/components/model/robotscroll";
 import { Textarea } from "~/components/ui/textarea";
 
 export default function RobotComparison({
-	models,
+	objectDetection,
+	stageclassification,
+	segmentation,
 	setSelectedModel,
 }: {
-	models: any;
+	objectDetection: any;
+	stageclassification: any;
+	segmentation: any;
 	setSelectedModel: Function;
 }) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [newModelName, setNewModelName] = useState("");
+	const [newModelVersion, setNewModelVersion] = useState("");
 	const [newModelDescription, setNewModelDescription] = useState("");
-	const [newModelTraits, setNewModelTraits] = useState("");
 	const [file, setFile] = useState<File | null>(null);
-	const [modelId, setModelId] = useState<string>("");
 
 	const openDialog = () => {
-		// Generate a random ID or any ID based on your logic
-		const generatedId = `ID-${Math.floor(Math.random() * 10000)}`;
-		setModelId(generatedId);
 		setIsDialogOpen(true);
 	};
 
 	const closeDialog = () => setIsDialogOpen(false);
 
 	const handleAddModel = () => {
-		// Handle the logic for adding a new model
 		const modelData = {
-			id: modelId,
-			name: newModelName,
-			description: newModelDescription,
-			traits: newModelTraits,
 			file,
 		};
-
-		// You can call a function to handle model data
-		// For now, we will just log the data
-		console.log("New model data:", modelData);
-
 		closeDialog();
 	};
 
 	return (
 		<>
 			<RobotScroll
-				models={models}
+				objectDetection={objectDetection}
+				stageclassification={stageclassification}
+				segmentation={segmentation}
 				setSelectedModel={setSelectedModel}
 				openDialog={openDialog}
 			/>
@@ -67,47 +58,33 @@ export default function RobotComparison({
 						</DialogTitle>
 					</DialogHeader>
 					<div className="space-y-4">
+						{/* Model Version */}
 						<div className="flex flex-col">
 							<label
-								htmlFor="model-id"
+								htmlFor="model-version"
 								className="text-sm font-medium"
 							>
-								Model ID
+								Model Version
 							</label>
 							<Input
-								id="model-id"
+								id="model-version"
 								type="text"
-								value={modelId}
-								readOnly
-								className="mt-2 p-2 bg-gray-800 rounded-lg text-white border-0"
-							/>
-						</div>
-
-						<div className="flex flex-col">
-							<label
-								htmlFor="model-name"
-								className="text-sm font-medium"
-							>
-								Model Name
-							</label>
-							<Input
-								id="model-name"
-								type="text"
-								value={newModelName}
+								value={newModelVersion}
 								onChange={(e) =>
-									setNewModelName(e.target.value)
+									setNewModelVersion(e.target.value)
 								}
 								className="mt-2 p-2 bg-gray-800 rounded-lg text-white border-0"
-								placeholder="Enter model name"
+								placeholder="Enter model version"
 							/>
 						</div>
 
+						{/* Model Description */}
 						<div className="flex flex-col">
 							<label
 								htmlFor="model-description"
 								className="text-sm font-medium"
 							>
-								Description
+								Model Description
 							</label>
 							<Textarea
 								id="model-description"
@@ -117,25 +94,6 @@ export default function RobotComparison({
 								}
 								className="mt-2 p-2 bg-gray-800 rounded-lg text-white border-0"
 								placeholder="Enter model description"
-								rows={4}
-							/>
-						</div>
-
-						<div className="flex flex-col">
-							<label
-								htmlFor="model-traits"
-								className="text-sm font-medium"
-							>
-								Traits (e.g., features, specifications)
-							</label>
-							<Textarea
-								id="model-traits"
-								value={newModelTraits}
-								onChange={(e) =>
-									setNewModelTraits(e.target.value)
-								}
-								className="mt-2 p-2 bg-gray-800 rounded-lg text-white border-0"
-								placeholder="Enter model traits"
 								rows={4}
 							/>
 						</div>

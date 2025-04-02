@@ -1,23 +1,99 @@
 import { Cpu, PlusCircle } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { useState } from "react";
 
 export default function RobotScroll({
-	models,
+	objectDetection,
+	stageclassification,
+	segmentation,
 	setSelectedModel,
 	openDialog,
 }: {
-	models: any;
+	objectDetection: any;
+	stageclassification: any;
+	segmentation: any;
 	setSelectedModel: Function;
 	openDialog: any;
 }) {
+	const [models, setModels] = useState<any>(objectDetection);
+	const [selectedCategory, setSelectedCategory] =
+		useState<string>("objectDetection");
+
+	const modelOptions = [
+		{ label: "YOLOv8 Object Detection", key: "objectDetection" },
+		{ label: "YOLOv8 Stage Classification", key: "stageclassification" },
+		{ label: "Mask-RCNN Segmentation", key: "segmentation" },
+	];
+
+	const changeCategory = (value: string) => {
+		setSelectedCategory(value);
+		switch (selectedCategory) {
+			case "stageclassification":
+				setModels(stageclassification);
+				setSelectedModel(stageclassification[0]);
+				break;
+			case "segmentation":
+				setModels(segmentation);
+				setSelectedModel(segmentation[0]);
+				break;
+			default:
+				setModels(objectDetection);
+				setSelectedModel(objectDetection[0]);
+				break;
+		}
+	};
+
+	const getCpuIconColor = (category: string) => {
+			switch (category) {
+				case "stageclassification":
+					return "text-yellow-500";
+				case "segmentation":
+					return "text-red-500";
+				default:
+					return "text-blue-500";
+			}
+		};
+
 	return (
 		<>
-			<ScrollArea className="p-4 lg:p-6 bg-gray-900 rounded-2xl h-[300px] lg:h-[400px]">
-				<h3 className="text-md lg:text-xl font-bold mb-3 border-b border-gray-700 pb-2 flex items-center justify-between">
-					Robot Model Comparison
-					<Cpu size={20} className="text-gray-400" />
-				</h3>
+			<ScrollArea className="p-4 lg:p-6 bg-gray-900 rounded-2xl h-[300px] lg:h-[350px]">
+				<div className="flex justify-between items-center mb-3">
+					<h3 className="text-md lg:text-xl font-bold border-b border-gray-700 pb-2">
+						<span className="text-green-200 text-left">
+							{
+								modelOptions.find(
+									(option) => option.key === selectedCategory
+								)?.label
+							}{" "}
+							Models
+						</span>
+					</h3>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger>
+							<button className="bg-gray-800 text-white px-3 py-1 rounded-lg text-sm hover:bg-gray-700">
+								Select Model Type
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="bg-gray-800 text-white">
+							{modelOptions.map((option) => (
+								<DropdownMenuItem
+									key={option.key}
+									onClick={() => changeCategory(option.key)}
+								>
+									{option.label}
+								</DropdownMenuItem>
+							))}
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
 
 				<div className="grid grid-cols-3 md:grid-cols-3 gap-3 lg:gap-4 px-2 lg:px-6">
 					<Card
@@ -39,9 +115,14 @@ export default function RobotScroll({
 							onClick={() => setSelectedModel(model)}
 						>
 							<CardContent className="flex flex-col items-center">
-								<Cpu size={28} className="text-blue-500" />
+								<Cpu
+									size={28}
+									className={getCpuIconColor(
+										selectedCategory
+									)}
+								/>
 								<p className="text-white text-xs lg:text-sm font-bold mt-2">
-									{model.name}
+									{model.version}
 								</p>
 							</CardContent>
 						</Card>

@@ -1,10 +1,13 @@
+
+// Author: JDM
+// Created on: 2025-04-01T16:13:09.641Z
 "use strict";
 
 const { faker } = require("@faker-js/faker");
 
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		const plants = Array.from({ length: 5 }).map(() => ({
+		const diseases = Array.from({ length: 5 }).map(() => ({
 			name: faker.person.firstName(),
 			description: faker.lorem.sentence(),
 			image: faker.image.url({ width: 200, height: 200 }),
@@ -24,10 +27,10 @@ module.exports = {
 			updatedAt: new Date(),
 		}));
 
-		return queryInterface.bulkInsert("Plants", plants, {});
+		return queryInterface.bulkInsert("Diseases", diseases, {});
 	},
 
 	down: async (queryInterface, Sequelize) => {
-		return queryInterface.bulkDelete("Plants", null, {});
+		return queryInterface.bulkDelete("Diseases", null, {});
 	},
 };

@@ -14,7 +14,8 @@ module.exports = {
 					username: "JDM",
 					email: "jdmaster888@gmail.com",
 					bio: "Administrator",
-					profileImage: "",
+					profileImage:
+						"https://res.cloudinary.com/djheiqm47/image/upload/v1743512007/JDM2_fkz08d.png",
 					socialLinks: JSON.stringify({}),
 					password: hashedPassword,
 					createdAt: new Date(),

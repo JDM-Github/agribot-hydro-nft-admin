@@ -16,18 +16,18 @@ import {
 import { motion } from "framer-motion";
 import ImageGallery from "./imagegallery";
 
-export default function PlantDetails({ plant }: {plant: any}) {
+export default function DiseaseDetails({ disease }: {disease: any}) {
 	const [expanded, setExpanded] = useState(false);
 
     const fakeAnalytics = {
 		confidence: [
-			{ name: "High Confidence", value: plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
+			{ name: "High Confidence", value: disease.confidence },
+			{ name: "Low Confidence", value: 100 - disease.confidence },
+			{ name: "Low Confidence", value: 100 - disease.confidence },
+			{ name: "Low Confidence", value: 100 - disease.confidence },
+			{ name: "Low Confidence", value: 100 - disease.confidence },
 		],
-		recall: [{ name: "Recall", value: plant.recall }],
+		recall: [{ name: "Recall", value: disease.recall }],
 		mAP50: Array.from({ length: 10 }, (_, i) => ({
 			index: i + 1,
 			value: Math.random() * 100,
@@ -36,23 +36,6 @@ export default function PlantDetails({ plant }: {plant: any}) {
 			index: i + 1,
 			value: Math.random() * 100,
 		})),
-	};
-
-	const fakeData = {
-		diseases: ["Fungal Rust", "Powdery Mildew", "Leaf Spot"],
-		sprays: ["Neem Oil", "Copper Fungicide", "Sulfur Spray"],
-		analytics: {
-			confidence: [
-				{ name: "High Confidence", value: plant.confidence },
-				{ name: "Low Confidence", value: 100 - plant.confidence },
-			],
-			recall: [{ name: "Recall", value: plant.recall }],
-			mAP50: [{ time: 1, value: plant.mAP50 }],
-			mAP50_95: Array.from({ length: 10 }, (_, i) => ({
-				index: i + 1,
-				value: Math.random() * 100,
-			})),
-		},
 	};
 
 	return (
@@ -64,31 +47,16 @@ export default function PlantDetails({ plant }: {plant: any}) {
 							<strong className="text-blue-300">
 								Description:
 							</strong>{" "}
-							{plant.description}
-						</p>
-						<p className="text-gray-400">
-							<strong className="text-green-300">
-								Diseases:
-							</strong>{" "}
-							{fakeData.diseases.join(", ")}
-						</p>
-						<p className="text-gray-400">
-							<strong className="text-yellow-300">
-								Recommended Spray:
-							</strong>{" "}
-							{fakeData.sprays.join(", ")}
+							{disease.description}
 						</p>
 					</div>
-					<ImageGallery plant={plant} />
+					<ImageGallery disease={disease} />
 				</div>
 
 				<div className="flex flex-col md:flex-row justify-between w-full space-y-4 md:space-y-0 mt-4">
 					<div className="w-full md:w-2/3 grid grid-cols-2 sm:flex sm:flex-wrap gap-4">
 						<Button className="w-full sm:w-auto min-w-[150px] text-white border-gray-600 hover:bg-gray-700">
-							Edit Plant
-						</Button>
-						<Button className="w-full sm:w-auto min-w-[150px] text-white border-gray-600 hover:bg-gray-700">
-							Add Disease
+							Edit Disease
 						</Button>
 					</div>
 					<div className="w-full md:w-1/3">

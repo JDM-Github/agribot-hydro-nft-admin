@@ -73,7 +73,7 @@ export default function AccountsPage({ loaderData }: Rt.ComponentProps) {
 						ease: "easeOut",
 					}}
 				>
-					<AccountsTable paginatedUsers={paginatedUsers} />
+					<AccountsTable paginatedUsers={paginatedUsers} showAdmins={showAdmins}/>
 					<AccountsPaginator
 						currentPage={currentPage}
 						setCurrentPage={setCurrentPage}
