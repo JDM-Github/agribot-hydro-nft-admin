@@ -7,6 +7,7 @@ import RequestHandler from "~/lib/utilities/RequestHandler";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { showToast } from "~/components/toast";
 
 export function meta({}: Rt.MetaArgs) {
 	return [
@@ -14,6 +15,7 @@ export function meta({}: Rt.MetaArgs) {
 		{ name: "description", content: "Welcome to React Router!" },
 	];
 }
+
 export function loader({ request }: { request: Request }) {
 	const cookieHeader = request.headers.get("cookie");
 	const token = cookieHeader
@@ -57,7 +59,7 @@ export default function LoginPage() {
 			);
 			if (!response.success) {
 				setError(response.message || "Invalid email or password.");
-				toast.error(response.message || "Invalid credentials");
+				showToast(response.message || "Invalid credentials", "error");
 				setLoading(false);
 				return;
 			}
@@ -69,12 +71,12 @@ export default function LoginPage() {
 				sameSite: "Strict",
 			});
 			login();
-			toast.success("Login successful!");
+			showToast(response.message || "Login successful!", "success");
 			setTimeout(() => navigate("/"), 1500);
 		} catch (error: any) {
 			console.error("Login error:", error);
 			setError("Something went wrong. Please try again.");
-			toast.error("Something went wrong. Please try again.");
+			showToast("Something went wrong. Please try again.", "error");
 		} finally {
 			setLoading(false);
 		}

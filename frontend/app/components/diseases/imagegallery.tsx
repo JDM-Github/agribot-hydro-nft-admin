@@ -9,19 +9,23 @@ export default function ImageGallery({ disease }: { disease: any }) {
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
 	return (
-		<div className="w-full md:w-1/3 flex gap-2 scrollbar-thin overflow-x-auto p-2 border border-gray-700 rounded-lg">
+		<div className="w-full md:w-2/3 flex gap-2 flex-nowrap overflow-x-auto p-2 border border-gray-700 rounded-lg">
 			{disease.all_images.map((img: any, index: any) => (
-				<button
-					key={index}
-					onClick={() => setSelectedImage(img)}
-					className="focus:outline-none"
-				>
-					<img
-						src={img}
-						alt={`Sample ${index + 1}`}
-						className="w-24 h-24 object-cover rounded-lg shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105"
-					/>
-				</button>
+				<>
+					<div key={index} className="min-w-[60px]">
+						<button
+							key={index}
+							onClick={() => setSelectedImage(img)}
+							className="focus:outline-none w-24 h-24 "
+						>
+							<img
+								src={img}
+								alt={`Sample ${index + 1}`}
+								className="w-24 h-24 object-cover rounded-lg shadow-lg cursor-pointer transition-transform duration-200 hover:scale-105"
+							/>
+						</button>
+					</div>
+				</>
 			))}
 
 			<Dialog

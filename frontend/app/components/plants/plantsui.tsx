@@ -91,7 +91,7 @@ export default function PlantDetails({ plant }: {plant: any}) {
 							Add Disease
 						</Button>
 					</div>
-					<div className="w-full md:w-1/3">
+					<div className="w-full md:w-2/3">
 						<Button
 							className="w-full text-white border-gray-600 hover:bg-gray-700"
 							onClick={() => setExpanded(!expanded)}

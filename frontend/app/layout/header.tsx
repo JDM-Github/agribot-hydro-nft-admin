@@ -101,7 +101,7 @@ export default function Header() {
 							/>
 						) : (
 							<div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full text-white font-semibold">
-								{user.fullName
+								{user.username
 									.split(" ")
 									.map((n: any) => n[0])
 									.join("")
