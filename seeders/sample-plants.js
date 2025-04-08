@@ -8,14 +8,24 @@ module.exports = {
 			name: faker.person.firstName(),
 			description: faker.lorem.sentence(),
 			image: faker.image.url({ width: 200, height: 200 }),
-			confidence: faker.number.float({
+			latest_precision: faker.number.float({
 				min: 80,
 				max: 99,
 				precision: 0.1,
 			}),
-			recall: faker.number.float({ min: 80, max: 99, precision: 0.1 }),
-			mAP50: faker.number.float({ min: 80, max: 99, precision: 0.1 }),
-			mAP50_95: faker.number.float({ min: 75, max: 95, precision: 0.1 }),
+			latest_recall: faker.number.float({ min: 80, max: 99, precision: 0.1 }),
+			latest_f1_score: faker.number.float({
+				min: 80,
+				max: 99,
+				precision: 0.1,
+			}),
+			latest_accuracy: faker.number.float({ min: 80, max: 99, precision: 0.1 }),
+			latest_version: "ModelV1.0.4",
+			all_version: ["ModelV1.0.0", "ModelV1.0.1", "ModelV1.0.2", "ModelV1.0.3", "ModelV1.0.4"],
+			all_precision: [faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 })],
+			all_recall: [faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 })],
+			all_f1_score: [faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), 	faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 })],
+			all_accuracy: [faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 }), faker.number.float({ min: 80, max: 99, precision: 0.1 })],
 			all_images: Array.from(
 				{ length: faker.number.int({ min: 1, max: 5 }) },
 				() => faker.image.url({ width: 200, height: 200 })

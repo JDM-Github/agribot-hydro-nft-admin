@@ -1,7 +1,7 @@
 import { Package, Image } from "lucide-react";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import ModelViewer from "~/components/modelviewer";
+// import ModelViewer from "~/components/modelviewer";
 import { useState } from "react";
 
 export default function Preview({
@@ -55,7 +55,8 @@ export default function Preview({
 					/>
 				</div>
 			) : (
-				<ModelViewer modelPath={"/AGRIBOT.glb"} />
+				// <ModelViewer modelPath={"/AGRIBOT.glb"} />
+				null
 			)}
 		</Card>
 	);

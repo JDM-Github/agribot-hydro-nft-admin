@@ -10,7 +10,7 @@ export default function PlantScroll({ plants }: { plants: any }) {
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	return (
 		<>
-			<ScrollArea className="w-full whitespace-nowrap bg-gray-900 rounded-2xl p-2">
+			<ScrollArea className="w-full whitespace-nowrap bg-gray-900 rounded-2xl p-2 lg:min-h-32">
 				<div className="flex space-x-4 p-2 min-w-max">
 					{plants.map((plant: any) => (
 						<div
@@ -27,8 +27,8 @@ export default function PlantScroll({ plants }: { plants: any }) {
 								{plant.name}
 							</p>
 							<p className="text-gray-400 text-xs">
-								Confidence:{" "}
-								{Number(plant.confidence).toFixed(2)}%
+								Accuracy:{" "}
+								{Number(plant.latest_accuracy).toFixed(2)}%
 							</p>
 						</div>
 					))}

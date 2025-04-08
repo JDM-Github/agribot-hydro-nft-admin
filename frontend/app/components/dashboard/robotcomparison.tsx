@@ -46,7 +46,6 @@ const RobotComparisonCard: React.FC<RobotComparisonCardProps> = ({
 	];
 
 	const [selectedModel, setSelectedModel] = useState(modelOptions[0]);
-
 	const selectedModels =
 		selectedModel.key === "objectDetection"
 			? objectDetection
@@ -54,11 +53,14 @@ const RobotComparisonCard: React.FC<RobotComparisonCardProps> = ({
 			? stageclassification
 			: segmentation;
 
-	const chartData = ["accuracy", "recall", "precision", "f1_score"].map(
+	const chartData = ["accuracy", "recall", "precision", "mAP50", "mAP50_95"].map(
 		(metric: string) => {
 			let row: any = { metric };
 			selectedModels.forEach((model) => {
-				row[model.version] = model[metric as keyof Model] as number * 100;
+				row[model.version] = +(
+					(model[metric as keyof Model] as number) * 100
+				).toFixed(2);
+
 			});
 			return row;
 		}
@@ -120,7 +122,8 @@ const RobotComparisonCard: React.FC<RobotComparisonCardProps> = ({
 												"accuracy",
 												"recall",
 												"precision",
-												"f1_score",
+												"mAP50",
+												"mAP50_95",
 											].map(
 												(metric: any) =>
 													Number(model[

@@ -14,24 +14,23 @@ import RobotComparison from "~/components/model/robotcomparison";
 import Specifications from "~/components/model/specification";
 import MaterialDialog from "~/components/model/materialdialog";
 import RequestHandler from "~/lib/utilities/RequestHandler";
-
+import { ToastContainer } from "react-toastify";
 
 export async function loader() {
 	try {
-		const [
-			plants,
-			objectDetection,
-			stageclassification,
-			segmentation,
-		] = await Promise.all([
-			RequestHandler.fetchData(
-				"get",
-				"plant/get-all-only?fields=id,image,name,confidence"
-			),
-			RequestHandler.fetchData("get", "yoloobjectdetection/get-all"),
-			RequestHandler.fetchData("get", "yolostageclassification/get-all"),
-			RequestHandler.fetchData("get", "maskrcnnsegmentation/get-all"),
-		]);
+		const [plants, objectDetection, stageclassification, segmentation] =
+			await Promise.all([
+				RequestHandler.fetchData(
+					"get",
+					"plant/get-all-only?fields=id,image,name,latest_accuracy"
+				),
+				RequestHandler.fetchData("get", "yoloobjectdetection/get-all"),
+				RequestHandler.fetchData(
+					"get",
+					"yolostageclassification/get-all"
+				),
+				RequestHandler.fetchData("get", "maskrcnnsegmentation/get-all"),
+			]);
 
 		if (!plants.success)
 			throw new Error(plants.message || "Failed to fetch plant count.");
@@ -73,8 +72,8 @@ export default function ModelPage({ loaderData }: Rt.ComponentProps) {
 	const objectDetection = loaderData.objectDetection || [];
 	const stageclassification = loaderData.stageClassification || [];
 	const segmentation = loaderData.segmentation || [];
-	
 
+	const [loading, setLoading] = useState(false);
 	const [selectedModel, setSelectedModel] = useState(objectDetection[0]);
 	const [showMaterials, setShowMaterials] = useState(false);
 
@@ -93,51 +92,72 @@ export default function ModelPage({ loaderData }: Rt.ComponentProps) {
 		"Carbon Fiber",
 		"High-Density Plastic",
 		"Silicon-based Circuitry",
-		"Lithium-Ion Battery"
+		"Lithium-Ion Battery",
 	];
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5, ease: "easeOut" }}
-		>
-			<div className="text-white grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 lg:p-6">
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
+		<>
+			<ToastContainer position="top-right" autoClose={2000} />
+			{loading && (
+				<div
+					className="fixed top-0 left-0 w-full h-full bg-gray-800/50 flex justify-center items-center z-100"
+					style={{ zIndex: "100" }}
 				>
-					<Preview setShowMaterials={setShowMaterials} />
-					<PlantScroll plants={plants} />
-				</motion.div>
+					<div className="border-4 border-t-4 border-gray-200 border-t-blue-500 w-16 h-16 rounded-full animate-spin"></div>
+				</div>
+			)}
 
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-				>
-					<RobotComparison
-						objectDetection={objectDetection}
-						stageclassification={stageclassification}
-						segmentation={segmentation}
-						setSelectedModel={setSelectedModel}
-					/>
-					<Specifications selectedModel={selectedModel} />
-				</motion.div>
-			</div>
 			<motion.div
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+				transition={{ duration: 0.5, ease: "easeOut" }}
 			>
-				<MaterialDialog
-					showMaterials={showMaterials}
-					setShowMaterials={setShowMaterials}
-					materials={materials}
-					materialLinks={materialLinks}
-				/>
+				<div className="text-white grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 lg:p-6">
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{
+							duration: 0.5,
+							delay: 0.4,
+							ease: "easeOut",
+						}}
+					>
+						<Preview setShowMaterials={setShowMaterials} />
+						<PlantScroll plants={plants} />
+					</motion.div>
+
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{
+							duration: 0.5,
+							delay: 0.2,
+							ease: "easeOut",
+						}}
+					>
+						<RobotComparison
+							setLoading={setLoading}
+							objectDetection={objectDetection}
+							stageclassification={stageclassification}
+							segmentation={segmentation}
+							setSelectedModel={setSelectedModel}
+						/>
+						<Specifications selectedModel={selectedModel} />
+					</motion.div>
+				</div>
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+				>
+					<MaterialDialog
+						showMaterials={showMaterials}
+						setShowMaterials={setShowMaterials}
+						materials={materials}
+						materialLinks={materialLinks}
+					/>
+				</motion.div>
 			</motion.div>
-		</motion.div>
+		</>
 	);
 }

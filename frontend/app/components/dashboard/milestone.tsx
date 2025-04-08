@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { Card, CardContent } from "~/components/ui/card";
 import { Tooltip } from "react-tooltip";
-import { addDays, format, parseISO } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Activity } from "lucide-react";
-import { Octokit } from "@octokit/rest";
 
 const today = new Date();
 

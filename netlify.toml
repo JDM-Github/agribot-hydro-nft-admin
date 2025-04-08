@@ -1,17 +1,26 @@
 [build]
   node_bundler = "esbuild"
   functions = "backend/functions"
-  publish = "frontend/build"
-  included_files = ["backend/models/**"]
-  command = "npm install && npm run build"
+  publish = "frontend/build/client"
+  included_files = [
+    "backend/models/**",
+    "backend/lib/**",
+    "backend/middleware/**",
+    "backend/models/**",
+    "backend/routes/**",
+    "backend/service/**",
+    "backend/utils/**"
+  ]
+  command = "react-router build"
+  max-body-size = 104857600
 
 [dev]
   node_bundler = "esbuild"
   functions = "backend/functions"
   publish = "dist"
-  included_files = ["backend/models/**"]
+  max-body-size = 104857600
   
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
+  status = 200  

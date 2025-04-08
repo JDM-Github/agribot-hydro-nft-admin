@@ -22,11 +22,14 @@ export async function loader() {
 			objectDetection,
 			stageclassification,
 			segmentation,
-			activities
+			activities,
 		] = await Promise.all([
 			RequestHandler.fetchData("get", "plant/count"),
 			RequestHandler.fetchData("get", "disease/count"),
-			RequestHandler.fetchData("get", "yoloobjectdetection/get-all"),
+			RequestHandler.fetchData(
+				"get",
+				"yoloobjectdetection/get-all?count=5"
+			),
 			RequestHandler.fetchData("get", "yolostageclassification/get-all"),
 			RequestHandler.fetchData("get", "maskrcnnsegmentation/get-all"),
 			RequestHandler.fetchData("get", "activity/get-all"),

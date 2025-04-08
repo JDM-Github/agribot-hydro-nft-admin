@@ -1,20 +1,10 @@
-import {
-	Links,
-	Meta,
-	Scripts,
-	ScrollRestoration,
-} from "react-router";
+import { Links, Meta, Scripts, ScrollRestoration } from "react-router";
 import ParticlesBackground from "~/components/particlebg";
-import { AuthProvider } from "~/context/auth";
 import App from "~/layout/app";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const Layout = () => {
-		return (
-			<AuthProvider>
-				<App>{children}</App>
-			</AuthProvider>
-		);
+		return <App>{children}</App>;
 	};
 
 	return (

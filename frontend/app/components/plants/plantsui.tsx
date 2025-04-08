@@ -12,6 +12,12 @@ import {
 	YAxis,
 	Tooltip,
 	ResponsiveContainer,
+	RadarChart,
+	PolarGrid,
+	PolarAngleAxis,
+	PolarRadiusAxis,
+	Radar,
+	Legend,
 } from "recharts";
 import { motion } from "framer-motion";
 import ImageGallery from "./imagegallery";
@@ -19,41 +25,25 @@ import ImageGallery from "./imagegallery";
 export default function PlantDetails({ plant }: {plant: any}) {
 	const [expanded, setExpanded] = useState(false);
 
-    const fakeAnalytics = {
-		confidence: [
-			{ name: "High Confidence", value: plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-			{ name: "Low Confidence", value: 100 - plant.confidence },
-		],
-		recall: [{ name: "Recall", value: plant.recall }],
-		mAP50: Array.from({ length: 10 }, (_, i) => ({
-			index: i + 1,
-			value: Math.random() * 100,
-		})),
-		mAP50_95: Array.from({ length: 10 }, (_, i) => ({
-			index: i + 1,
-			value: Math.random() * 100,
-		})),
-	};
+	const versionCount = 5;
+	const radarData = ["Precision", "Recall", "F1", "Accuracy"].map(
+		(metric, idx) => {
+			const obj: any = { subject: metric, fullMark: 1 };
+			for (let i = 0; i < versionCount; i++) {
+				const key = `v${i}`;
+				if (metric === "Precision")
+					obj[key] = Number(plant.all_precision[i] || 0);
+				if (metric === "Recall")
+					obj[key] = Number(plant.all_recall[i] || 0);
+				if (metric === "F1")
+					obj[key] = Number(plant.all_f1_score[i] || 0);
+				if (metric === "Accuracy")
+					obj[key] = Number(plant.all_accuracy[i] || 0);
+			}
+			return obj;
+		}
+	);
 
-	const fakeData = {
-		diseases: ["Fungal Rust", "Powdery Mildew", "Leaf Spot"],
-		sprays: ["Neem Oil", "Copper Fungicide", "Sulfur Spray"],
-		analytics: {
-			confidence: [
-				{ name: "High Confidence", value: plant.confidence },
-				{ name: "Low Confidence", value: 100 - plant.confidence },
-			],
-			recall: [{ name: "Recall", value: plant.recall }],
-			mAP50: [{ time: 1, value: plant.mAP50 }],
-			mAP50_95: Array.from({ length: 10 }, (_, i) => ({
-				index: i + 1,
-				value: Math.random() * 100,
-			})),
-		},
-	};
 
 	return (
 		<tr className="bg-gray-950 border-gray-800 border">
@@ -70,13 +60,13 @@ export default function PlantDetails({ plant }: {plant: any}) {
 							<strong className="text-green-300">
 								Diseases:
 							</strong>{" "}
-							{fakeData.diseases.join(", ")}
+							{"Not Set"}
 						</p>
 						<p className="text-gray-400">
 							<strong className="text-yellow-300">
 								Recommended Spray:
 							</strong>{" "}
-							{fakeData.sprays.join(", ")}
+							{"Not Set"}
 						</p>
 					</div>
 					<ImageGallery plant={plant} />
@@ -110,108 +100,266 @@ export default function PlantDetails({ plant }: {plant: any}) {
 						opacity: expanded ? 1 : 0,
 					}}
 					transition={{ duration: 0.2, ease: "easeOut" }}
-					className="overflow-hidden mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+					className="overflow-hidden mt-4 flex flex-col gap-6"
 				>
-					<div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-						<h3 className="text-center text-green-300 font-semibold mb-2">
-							Confidence
-						</h3>
-						<ResponsiveContainer width="100%" height={200}>
-							<PieChart>
-								<Pie
-									data={fakeAnalytics.confidence}
-									dataKey="value"
-									nameKey="name"
-									cx="50%"
-									cy="50%"
-									outerRadius={60}
-									label
+					{expanded && (
+						<div className="bg-gray-900 p-4 rounded-lg shadow-lg">
+							<h3 className="text-center text-blue-300 font-semibold mb-2">
+								Radar Overview
+							</h3>
+							<ResponsiveContainer width="100%" height={300}>
+								<RadarChart data={radarData}>
+									<PolarGrid
+										gridType="polygon"
+										stroke="#444"
+										strokeDasharray="4 4"
+									/>
+									<PolarAngleAxis
+										dataKey="subject"
+										tick={{
+											fill: "#ccc",
+											fontSize: 12,
+											fontWeight: 500,
+										}}
+									/>
+									<PolarRadiusAxis
+										angle={30}
+										domain={[0, 1]}
+										tick={{ fill: "#ccc", fontSize: 10 }}
+										axisLine={false}
+									/>
+									{plant.all_version
+										.slice(0, versionCount)
+										.map((version: string, i: number) => {
+											const colors = [
+												"#8884d8",
+												"#82ca9d",
+												"#ffc658",
+												"#ff7300",
+												"#FF4444",
+											];
+											return (
+												<Radar
+													key={version}
+													name={version}
+													dataKey={`v${i}`}
+													stroke={
+														colors[
+															i % colors.length
+														]
+													}
+													fill={
+														colors[
+															i % colors.length
+														]
+													}
+													fillOpacity={0.35}
+													strokeWidth={2}
+													strokeLinejoin="round"
+												/>
+											);
+										})}
+									<Tooltip
+										contentStyle={{
+											backgroundColor: "#1f2937",
+											border: "none",
+											color: "#fff",
+										}}
+										itemStyle={{ fontSize: 13 }}
+									/>
+									<Legend
+										iconType="circle"
+										verticalAlign="bottom"
+										wrapperStyle={{
+											paddingTop: 8,
+											color: "#ccc",
+										}}
+									/>
+								</RadarChart>
+							</ResponsiveContainer>
+						</div>
+					)}
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+						<div className="bg-gray-800 p-4 rounded-lg shadow-lg">
+							<h3 className="text-center text-green-300 font-semibold mb-2">
+								Precision
+							</h3>
+							<ResponsiveContainer width="100%" height={200}>
+								<PieChart>
+									<Tooltip
+										cursor={{
+											fill: "#374151",
+											opacity: 0.3,
+										}}
+										contentStyle={{
+											backgroundColor: "#1f2937",
+											border: "none",
+											color: "#fff",
+										}}
+										labelStyle={{ color: "#00C49F" }}
+										itemStyle={{ color: "#fff" }}
+									/>
+
+									<Pie
+										data={plant.all_version
+											.slice(0, 5)
+											.map(
+												(
+													version: string,
+													i: number
+												) => ({
+													name: version,
+													value: Number(
+														Number(
+															plant.all_precision[
+																i
+															] || 0
+														).toFixed(2)
+													),
+												})
+											)}
+										dataKey="value"
+										nameKey="name"
+										cx="50%"
+										cy="50%"
+										outerRadius={60}
+										label
+									>
+										{[
+											"#8884d8",
+											"#ff7300",
+											"#00C49F",
+											"#FFBB28",
+											"#FF4444",
+										].map((color, index) => (
+											<Cell
+												key={`cell-${index}`}
+												fill={color}
+											/>
+										))}
+									</Pie>
+								</PieChart>
+							</ResponsiveContainer>
+						</div>
+
+						<div className="bg-gray-900 p-4 rounded-lg shadow-lg">
+							<h3 className="text-center text-green-300 font-semibold mb-2">
+								Recall
+							</h3>
+							<ResponsiveContainer width="100%" height={200}>
+								<BarChart
+									data={plant.all_version
+										.slice(0, 5)
+										.map((version: string, i: number) => ({
+											name: version,
+											value: Number(
+												plant.all_recall[i] || 0
+											).toFixed(2),
+										}))}
 								>
-									<Cell fill="#8884d8" />
-									<Cell fill="#ff7300" />
-								</Pie>
-							</PieChart>
-						</ResponsiveContainer>
-					</div>
+									<XAxis
+										dataKey="name"
+										tick={{ fill: "#ccc" }}
+									/>
+									<YAxis tick={{ fill: "#ccc" }} />
+									<Tooltip
+										cursor={{
+											fill: "#374151",
+											opacity: 0.3,
+										}}
+										contentStyle={{
+											backgroundColor: "#1f2937",
+											border: "none",
+											color: "#fff",
+										}}
+									/>
+									<Bar dataKey="value" fill="#82ca9d" />
+								</BarChart>
+							</ResponsiveContainer>
+						</div>
 
-					<div className="bg-gray-900 p-4 rounded-lg shadow-lg">
-						<h3 className="text-center text-green-300 font-semibold mb-2">
-							Recall
-						</h3>
-						<ResponsiveContainer width="100%" height={200}>
-							<BarChart data={fakeAnalytics.recall}>
-								<XAxis dataKey="name" tick={{ fill: "#ccc" }} />
-								<YAxis tick={{ fill: "#ccc" }} />
-								<Tooltip
-									cursor={{ fill: "#374151", opacity: 0.3 }}
-									contentStyle={{
-										backgroundColor: "#1f2937",
-										border: "none",
-										color: "#fff",
-									}}
-								/>
-								<Bar dataKey="value" fill="#82ca9d" />
-							</BarChart>
-						</ResponsiveContainer>
-					</div>
+						<div className="bg-gray-800 p-4 rounded-lg shadow-lg">
+							<h3 className="text-center text-green-300 font-semibold mb-2">
+								F1 Score
+							</h3>
+							<ResponsiveContainer width="100%" height={200}>
+								<LineChart
+									data={plant.all_version
+										.slice(0, 5)
+										.map((version: string, i: number) => ({
+											name: version,
+											value: Number(
+												plant.all_f1_score[i] || 0
+											).toFixed(2),
+										}))}
+								>
+									<XAxis
+										dataKey="index"
+										tick={{ fill: "#ccc" }}
+									/>
+									<YAxis tick={{ fill: "#ccc" }} />
+									<Tooltip
+										cursor={{
+											fill: "#374151",
+											opacity: 0.3,
+										}}
+										contentStyle={{
+											backgroundColor: "#1f2937",
+											border: "none",
+											color: "#fff",
+										}}
+									/>
+									<Line
+										type="monotone"
+										dataKey="value"
+										stroke="#ff7300"
+										strokeWidth={2}
+										dot={{ r: 4 }}
+									/>
+								</LineChart>
+							</ResponsiveContainer>
+						</div>
 
-					<div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-						<h3 className="text-center text-green-300 font-semibold mb-2">
-							mAP50
-						</h3>
-						<ResponsiveContainer width="100%" height={200}>
-							<LineChart data={fakeAnalytics.mAP50}>
-								<XAxis
-									dataKey="index"
-									tick={{ fill: "#ccc" }}
-								/>
-								<YAxis tick={{ fill: "#ccc" }} />
-								<Tooltip
-									cursor={{ fill: "#374151", opacity: 0.3 }}
-									contentStyle={{
-										backgroundColor: "#1f2937",
-										border: "none",
-										color: "#fff",
-									}}
-								/>
-								<Line
-									type="monotone"
-									dataKey="value"
-									stroke="#ff7300"
-									strokeWidth={2}
-									dot={{ r: 4 }}
-								/>
-							</LineChart>
-						</ResponsiveContainer>
-					</div>
-
-					{/* mAP50_95 */}
-					<div className="bg-gray-900 p-4 rounded-lg shadow-lg">
-						<h3 className="text-center text-green-300 font-semibold mb-2">
-							mAP50_95
-						</h3>
-						<ResponsiveContainer width="100%" height={200}>
-							<BarChart data={fakeAnalytics.mAP50_95}>
-								<XAxis
-									dataKey="index"
-									tick={{ fill: "#ccc" }}
-								/>
-								<YAxis tick={{ fill: "#ccc" }} />
-								<Tooltip
-									cursor={{ fill: "#374151", opacity: 0.3 }}
-									contentStyle={{
-										backgroundColor: "#1f2937",
-										border: "none",
-										color: "#fff",
-									}}
-								/>
-								<Bar
-									dataKey="value"
-									fill="#d4526e"
-									opacity={0.8}
-								/>
-							</BarChart>
-						</ResponsiveContainer>
+						{/* mAP50_95 */}
+						<div className="bg-gray-900 p-4 rounded-lg shadow-lg">
+							<h3 className="text-center text-green-300 font-semibold mb-2">
+								Accuracy
+							</h3>
+							<ResponsiveContainer width="100%" height={200}>
+								<BarChart
+									data={plant.all_version
+										.slice(0, 5)
+										.map((version: string, i: number) => ({
+											name: version,
+											value: Number(
+												plant.all_accuracy[i] || 0
+											).toFixed(2),
+										}))}
+								>
+									<XAxis
+										dataKey="index"
+										tick={{ fill: "#ccc" }}
+									/>
+									<YAxis tick={{ fill: "#ccc" }} />
+									<Tooltip
+										cursor={{
+											fill: "#374151",
+											opacity: 0.3,
+										}}
+										contentStyle={{
+											backgroundColor: "#1f2937",
+											border: "none",
+											color: "#fff",
+										}}
+									/>
+									<Bar
+										dataKey="value"
+										fill="#d4526e"
+										opacity={0.8}
+									/>
+								</BarChart>
+							</ResponsiveContainer>
+						</div>
 					</div>
 				</motion.div>
 			</td>

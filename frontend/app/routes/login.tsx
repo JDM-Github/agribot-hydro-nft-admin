@@ -2,9 +2,8 @@ import type { Route as Rt } from "./+types/login";
 import { useState } from "react";
 import { redirect, useNavigate } from "react-router";
 import { Input } from "~/components/ui/input";
-import { useAuth } from "~/context/auth";
 import RequestHandler from "~/lib/utilities/RequestHandler";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import { showToast } from "~/components/toast";
@@ -31,7 +30,6 @@ export function loader({ request }: { request: Request }) {
 }
 
 export default function LoginPage() {
-	const { login } = useAuth();
 	const navigate = useNavigate();
 
 	const [email, setEmail] = useState("");
@@ -70,7 +68,6 @@ export default function LoginPage() {
 				secure: true,
 				sameSite: "Strict",
 			});
-			login();
 			showToast(response.message || "Login successful!", "success");
 			setTimeout(() => navigate("/"), 1500);
 		} catch (error: any) {

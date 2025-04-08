@@ -1,13 +1,13 @@
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
-import { useAuth } from "~/context/auth";
 
 export default function Logout({ selectedTab }: { selectedTab: string }) {
-	const { logout } = useAuth();
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
-		logout();
+		Cookies.remove("token");
+		localStorage.removeItem("user");
 		navigate("/");
 	}
 

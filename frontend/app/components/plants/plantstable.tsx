@@ -21,7 +21,7 @@ export default function PlantsTable({
 							Plant Name
 						</th>
 						<th className="p-3 text-left truncate w-1/5">
-							Confidence
+							Precision
 						</th>
 						{/* <th className="p-3 text-left truncate">Recall</th>
 						<th className="p-3 text-left truncate">mAP50</th>
@@ -57,17 +57,9 @@ export default function PlantsTable({
 										</span>
 									</td>
 									<td className="p-3 text-green-400 truncate">
-										{Number(plant.confidence).toFixed(2)}%
+										{Number(plant.latest_precision).toFixed(2)}%
 									</td>
-									{/* <td className="p-3 text-green-400 truncate">
-										{plant.recall}%
-									</td>
-									<td className="p-3 text-green-400 truncate">
-										{plant.mAP50}%
-									</td>
-									<td className="p-3 text-green-400 truncate">
-										{plant.mAP50_95}%
-									</td> */}
+
 									<td className="p-3 text-blue-400 truncate">
 										{new Date(
 											plant.createdAt

@@ -8,7 +8,7 @@ export default class RequestHandler {
 	static async fetchData(
 		method: string,
 		link: string,
-		requestData: Record<string, any> = {},
+		requestData: Record<string, any> | FormData = {}, 
 		headers: Record<string, string> = {},
 		callback: ((error: string | null, data?: any) => void) | null = null
 	) {
@@ -18,33 +18,30 @@ export default class RequestHandler {
 			method: method.toUpperCase(),
 		};
 
-		options.headers = {
-			"Content-Type": "application/json",
-			...headers,
-		};
-
 		const isClient = typeof window !== "undefined";
 		const token = isClient ? localStorage.getItem("authToken") : null;
 
 		if (token) {
-			options.headers["Authorization"] = `Bearer ${token}`;
+			headers["Authorization"] = `Bearer ${token}`;
 		}
-		
-		if (
-			method.toLowerCase() === "get" &&
-			Object.keys(requestData).length > 0
-		) {
-			const queryString = new URLSearchParams(
-				requestData as Record<string, string>
-			).toString();
-			url += `?${queryString}`;
-		} else if (
-			method.toLowerCase() !== "get" &&
-			method.toLowerCase() !== "head"
-		) {
-			options.body = JSON.stringify(requestData);
+
+		const isFormData = requestData instanceof FormData;
+
+		if (!isFormData) {
+			options.headers = {
+				"Content-Type": "application/json",
+				...headers,
+			};
+			if (
+				method.toLowerCase() !== "get" &&
+				method.toLowerCase() !== "head"
+			) {
+				options.body = JSON.stringify(requestData);
+			}
+		} else {
+			options.body = requestData; 
 		}
-		
+
 		console.log(url);
 		console.log(options);
 
@@ -73,8 +70,8 @@ export default class RequestHandler {
 				success: false,
 				message: error.message || "An error occurred",
 				baseURL: RequestHandler.baseURL,
-				url,	
-			}; // Return error response
+				url,
+			};
 		}
 	}
 }
